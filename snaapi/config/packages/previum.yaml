@@ -1,0 +1,13 @@
+services:
+    App\Previum\Token\JwtDecoderInterface:
+        class: App\Previum\Token\FirebaseJwtDecoder
+        arguments:
+            $secret: '%env(PREVIUM_JWT_SECRET)%'
+
+    App\Previum\Token\TokenValidatorInterface:
+        class: App\Previum\Token\HttpTokenValidator
+        arguments:
+            $httpClient: '@httplug.client.previum_validate'
+            $messageFactory: '@Nyholm\Psr7\Factory\Psr17Factory'
+            $host: '%env(PREVIUM_AUTH_HOST)%'
+            $endpoint: '%env(PREVIUM_AUTH_ENDPOINT)%'

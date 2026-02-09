@@ -54,3 +54,13 @@ httplug:
                 - header_defaults:
                     headers:
                         'User-Agent': '%env(string:EC_USER_AGENT)%'
+
+        previum_validate:
+            factory: 'httplug.factory.guzzle7'
+            http_methods_client: true
+            plugins:
+                - 'httplug.plugin.content_length'
+                - 'httplug.plugin.logger'
+                - 'httplug.plugin.retry'
+            config:
+                timeout: '%env(int:PREVIUM_AUTH_TIMEOUT)%'
