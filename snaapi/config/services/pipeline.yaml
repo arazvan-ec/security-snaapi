@@ -62,6 +62,8 @@ services:
     App\Application\Pipeline\Enricher\CommentsEnricher: ~
     App\Application\Pipeline\Enricher\OpeningMultimediaEnricher: ~
     App\Application\Pipeline\Enricher\BodyPhotosEnricher: ~
+    App\Application\Pipeline\Enricher\InsertedNewsEnricher: ~
+    App\Application\Pipeline\Enricher\RecommendedEditorialsEnricher: ~
 
     # =================================================================
     # Pipeline
