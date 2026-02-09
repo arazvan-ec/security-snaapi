@@ -1,8 +1,4 @@
 # config/services.yaml
-imports:
-    - { resource: 'services/pipeline.yaml' }
-    - { resource: 'services/solid.yaml' }
-
 services:
     # default configuration for services in *this* file
     _defaults:

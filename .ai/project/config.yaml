@@ -50,37 +50,45 @@ git:
   feature_branch_prefix: "feature/"
   commit_style: "conventional"  # conventional, simple, etc.
 
-# AI Analysis Results (auto-populated by ai_consultant.py)
+# AI Analysis Results
 ai_analysis:
-  # Last analysis timestamp
-  last_analyzed: ""
+  last_analyzed: "2026-02-09"
 
-  # Detected information
   detected:
-    project_type: ""            # backend-only, frontend-only, fullstack, monorepo
-    frameworks: []              # List of detected frameworks
-    package_managers: []        # composer, npm, yarn, pip, etc.
-    has_tests: false
-    has_ci: false
-    has_docker: false
+    project_type: "backend-only"
+    frameworks: ["symfony-6.4"]
+    package_managers: ["composer"]
+    has_tests: true
+    has_ci: true
+    has_docker: true
 
-  # Complexity assessment
   complexity:
-    level: ""                   # low, medium, high
-    factors: []                 # List of factors affecting complexity
-    estimated_effort: ""        # rough estimate: "< 1 day", "1-3 days", "> 3 days"
+    level: "high"
+    factors:
+      - "Chain of Responsibility orchestration pattern"
+      - "7 external microservice clients (editorial, multimedia, section, journalist, membership, tag, widget)"
+      - "Async messaging via RabbitMQ/Symfony Messenger"
+      - "Compiler passes for dynamic service registration"
+      - "PHPStan level 9 + mutation testing"
+    estimated_effort: "> 3 days"
 
-  # Recommendations
   recommendations:
-    workflow: ""                # Recommended workflow
-    workflow_reasoning: ""      # Why this workflow
-    architecture: ""            # Recommended architecture pattern
-    suggestions: []             # List of improvement suggestions
+    workflow: "task-breakdown"
+    workflow_reasoning: "High complexity API gateway with multiple bounded contexts requires detailed planning"
+    architecture: "hexagonal+cqrs"
+    suggestions:
+      - "Use task-breakdown workflow for new features"
+      - "Follow existing Chain of Responsibility pattern for new orchestrators"
+      - "Add DataTransformer + Compiler pass for new content types"
+      - "Maintain 79% MSI threshold in mutation testing"
 
-  # Existing patterns (for reference)
   patterns:
-    backend: []                 # List of {name, path, description}
-    frontend: []                # List of {name, path, description}
+    backend:
+      - {name: "Chain of Responsibility", path: "snaapi/src/Orchestrator/", description: "Request routing by content type"}
+      - {name: "Strategy Pattern", path: "snaapi/src/Application/DataTransformer/", description: "Type-specific data transformation"}
+      - {name: "Compiler Pass", path: "snaapi/src/DependencyInjection/Compiler/", description: "Dynamic service registration via tags"}
+      - {name: "Bounded Context Client", path: "snaapi/src/Ec/", description: "External microservice HTTP clients"}
+    frontend: []
 
 # Feature templates
 features:
