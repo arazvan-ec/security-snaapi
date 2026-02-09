@@ -40,10 +40,7 @@ final readonly class EditorialEnricher implements EnricherInterface
             throw new \RuntimeException(sprintf('Editorial not found: %s', $context->editorialId()));
         }
 
-        if (!$editorial->isVisible()) {
-            throw new EditorialNotPublishedYetException();
-        }
-
+        // Visibility check is delegated to VisibilityStrategy in the adapter layer
         $context->setEditorial($editorial);
     }
 }

@@ -5,13 +5,35 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $extension: '%env(URL_ENV)%'
+    # Legacy orchestrators excluded — replaced by PipelineEditorialOrchestrator
     App\Orchestrator\Chain\:
         resource: '../../src/Orchestrator/Chain/'
         tags: ['app.orchestrators']
         exclude:
             - '../../src/Orchestrator/Chain/Multimedia/'
+            - '../../src/Orchestrator/Chain/EditorialOrchestrator.php'
+            - '../../src/Orchestrator/Chain/PreviumEditorialOrchestrator.php'
+            - '../../src/Orchestrator/Chain/PipelineEditorialOrchestrator.php'
+            - '../../src/Orchestrator/Chain/EditorialOrchestratorLegacy.php'
         lazy: true
         shared: true
+
+    # Pipeline-backed orchestrators with Visibility Strategy (SOLID)
+    app.orchestrator.editorial:
+        class: App\Orchestrator\Chain\PipelineEditorialOrchestrator
+        arguments:
+            $visibilityStrategy: '@App\Application\Strategy\Visibility\PublishedOnlyStrategy'
+            $contentType: 'editorial'
+        tags: ['app.orchestrators']
+        lazy: true
+
+    app.orchestrator.previum:
+        class: App\Orchestrator\Chain\PipelineEditorialOrchestrator
+        arguments:
+            $visibilityStrategy: '@App\Application\Strategy\Visibility\AllowAllStrategy'
+            $contentType: 'previum'
+        tags: ['app.orchestrators']
+        lazy: true
 
     App\Orchestrator\OrchestratorChainHandler:
         lazy: true

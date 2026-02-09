@@ -84,6 +84,14 @@ services:
             $fieldExtractor: '@App\Application\Strategy\Editorial\EditorialFieldExtractorInterface'
 
     # =================================================================
+    # VISIBILITY STRATEGY (OCP - Open/Closed Principle)
+    # Replaces duplicated isVisible() checks in Editorial/Previum orchestrators
+    # =================================================================
+
+    App\Application\Strategy\Visibility\PublishedOnlyStrategy: ~
+    App\Application\Strategy\Visibility\AllowAllStrategy: ~
+
+    # =================================================================
     # SOLID PIPELINE (OCP + DIP)
     # =================================================================
 
