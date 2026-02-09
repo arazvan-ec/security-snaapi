@@ -6,7 +6,7 @@ namespace App\Application\Pipeline\Enricher;
 
 use App\Application\Pipeline\EditorialContext;
 use App\Application\Pipeline\EnricherInterface;
-use App\Ec\Snaapi\Infrastructure\Client\Http\QueryLegacyClient;
+use App\Domain\Port\Gateway\CommentGatewayInterface;
 
 /**
  * Enriches the context with comment count.
@@ -14,7 +14,7 @@ use App\Ec\Snaapi\Infrastructure\Client\Http\QueryLegacyClient;
 final readonly class CommentsEnricher implements EnricherInterface
 {
     public function __construct(
-        private QueryLegacyClient $legacyClient,
+        private CommentGatewayInterface $commentGateway,
     ) {
     }
 
@@ -30,13 +30,7 @@ final readonly class CommentsEnricher implements EnricherInterface
 
     public function enrich(EditorialContext $context): void
     {
-        try {
-            /** @var array{options: array{totalrecords?: int}} $comments */
-            $comments = $this->legacyClient->findCommentsByEditorialId($context->editorialId());
-            $count = $comments['options']['totalrecords'] ?? 0;
-            $context->setCommentsCount($count);
-        } catch (\Throwable) {
-            $context->setCommentsCount(0);
-        }
+        $count = $this->commentGateway->findCommentCountByEditorialId($context->editorialId());
+        $context->setCommentsCount($count);
     }
 }
