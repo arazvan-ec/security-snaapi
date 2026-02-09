@@ -1,0 +1,12 @@
+security:
+    firewalls:
+        previum:
+            pattern: ^/previum
+            stateless: true
+            custom_authenticators:
+                - App\Previum\Authenticator\PreviumJwtAuthenticator
+        main:
+            lazy: true
+
+    access_control:
+        - { path: ^/previum, roles: ROLE_PREVIUM }
