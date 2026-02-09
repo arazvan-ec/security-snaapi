@@ -2,3 +2,8 @@ getEditorialById:
     path: /editorials/{id}
     controller: App\Controller\V1\EditorialController::getEditorialById
     methods: GET
+
+getPreviumEditorialById:
+    path: /previum/{id}
+    controller: App\Controller\V1\PreviumEditorialController::getEditorialById
+    methods: GET
