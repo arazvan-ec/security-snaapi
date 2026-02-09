@@ -1,0 +1,89 @@
+# config/services/pipeline.yaml
+# Pipeline + DTO Factory Architecture Services
+# See ADR-001: Architecture Choice for SNAAPI Refactoring
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # =================================================================
+    # Gateway Interfaces (Port/Adapter Pattern)
+    # =================================================================
+
+    App\Domain\Port\Gateway\EditorialGatewayInterface:
+        alias: App\Infrastructure\Gateway\Http\EditorialHttpGateway
+
+    App\Domain\Port\Gateway\SectionGatewayInterface:
+        alias: App\Infrastructure\Gateway\Http\SectionHttpGateway
+
+    App\Domain\Port\Gateway\MultimediaGatewayInterface:
+        alias: App\Infrastructure\Gateway\Http\MultimediaHttpGateway
+
+    App\Domain\Port\Gateway\TagGatewayInterface:
+        alias: App\Infrastructure\Gateway\Http\TagHttpGateway
+
+    App\Domain\Port\Gateway\JournalistGatewayInterface:
+        alias: App\Infrastructure\Gateway\Http\JournalistHttpGateway
+
+    App\Domain\Port\Gateway\MembershipGatewayInterface:
+        alias: App\Infrastructure\Gateway\Http\MembershipHttpGateway
+
+    # =================================================================
+    # HTTP Gateway Implementations
+    # =================================================================
+
+    App\Infrastructure\Gateway\Http\EditorialHttpGateway: ~
+    App\Infrastructure\Gateway\Http\SectionHttpGateway: ~
+    App\Infrastructure\Gateway\Http\MultimediaHttpGateway: ~
+    App\Infrastructure\Gateway\Http\TagHttpGateway: ~
+    App\Infrastructure\Gateway\Http\JournalistHttpGateway: ~
+    App\Infrastructure\Gateway\Http\MembershipHttpGateway: ~
+
+    # =================================================================
+    # Enrichers (Pipeline Pattern)
+    # Tagged with 'app.enricher' for automatic collection
+    # =================================================================
+
+    _instanceof:
+        App\Application\Pipeline\EnricherInterface:
+            tags: ['app.enricher']
+
+    App\Application\Pipeline\Enricher\EditorialEnricher: ~
+    App\Application\Pipeline\Enricher\SectionEnricher: ~
+    App\Application\Pipeline\Enricher\MultimediaEnricher: ~
+    App\Application\Pipeline\Enricher\TagsEnricher: ~
+    App\Application\Pipeline\Enricher\JournalistsEnricher: ~
+    App\Application\Pipeline\Enricher\MembershipEnricher: ~
+    App\Application\Pipeline\Enricher\CommentsEnricher: ~
+
+    # =================================================================
+    # Pipeline
+    # =================================================================
+
+    App\Application\Pipeline\EnrichmentPipeline:
+        arguments:
+            $enrichers: !tagged_iterator app.enricher
+
+    # =================================================================
+    # Response Factories (DTO Factory Pattern)
+    # =================================================================
+
+    App\Application\Factory\Response\TitlesResponseFactory: ~
+    App\Application\Factory\Response\SectionResponseFactory: ~
+    App\Application\Factory\Response\TagResponseFactory: ~
+
+    App\Application\Factory\Response\SignatureResponseFactory:
+        arguments:
+            $extension: '%env(URL_ENV)%'
+
+    App\Application\Factory\Response\MultimediaResponseFactory: ~
+    App\Application\Factory\Response\BodyElementResponseFactory: ~
+    App\Application\Factory\Response\BodyResponseFactory: ~
+    App\Application\Factory\Response\EditorialResponseFactory: ~
+
+    # =================================================================
+    # Handler
+    # =================================================================
+
+    App\Application\Handler\GetEditorialHandler: ~

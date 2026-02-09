@@ -1,0 +1,30 @@
+# Plugin temporary files
+.ai/logs/
+.ai/snapshots/
+.ai/metrics/
+
+# Context snapshots
+.ai/logs/context_snapshots/
+
+# Session-specific files
+*_session.log
+audit_*.json
+session_*.log
+tool_use_*.log
+
+# Node modules
+node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Vendor dependencies (install via composer)
+snaapi/vendor/
+snaapi/var/
