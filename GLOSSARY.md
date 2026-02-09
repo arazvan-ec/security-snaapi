@@ -41,6 +41,28 @@ Intento 10: Si sigue fallando → BLOCKED, pedir ayuda
 
 ---
 
+### Shape Up / Shaping
+**Qué es**: Metodología de Ryan Singer para explorar problema y solución antes de planificar. Separa el "qué" (Requirements) del "cómo" (Shapes) y valida el encaje con fit checks.
+
+**Conceptos clave**:
+- **Requirements (R)**: Definen el problema, independientes de la solución
+- **Shapes (A, B, C)**: Soluciones alternativas con partes concretas (mecanismos)
+- **Fit Check (R x A)**: Matriz binaria que verifica qué requisitos cubre cada solución
+- **Spike**: Investigación para resolver unknowns antes de comprometerse
+- **Breadboard**: Diagrama técnico que combina UI y código en un circuito
+- **Vertical Slice**: Subset del breadboard demostrable end-to-end
+
+**Flujo**:
+```
+Frame → Requirements → Shape → Fit Check → Spike → Breadboard → Slice
+```
+
+**Comando**: `/workflows:shape`
+
+**Origen**: Ryan Singer, "Shape Up" (Basecamp/37signals).
+
+---
+
 ### Agent Harness
 **Qué es**: Sistema que coordina múltiples agentes de IA trabajando en paralelo.
 
@@ -168,6 +190,9 @@ Experiencia guiada interactiva para nuevos usuarios.
 ### /workflows:help
 Ayuda rápida y navegación entre comandos y conceptos.
 
+### /workflows:shape
+Explora problema y solución antes de planificar. Separa requirements de shapes, ejecuta spikes, genera breadboards y slices verticales. Opcional pero recomendado para features complejas.
+
 ### /workflows:plan
 Inicia la planificación de una feature.
 
@@ -293,6 +318,7 @@ Gestiona Living Specs del proyecto. Extrae specs del código existente, detecta 
 
 **Flujo**:
 ```
+0. (Opcional) Shape: explorar problema y solución
 1. Definir specs de la feature
 2. Validar contra arquitectura existente
 3. Planificar implementación
@@ -300,6 +326,40 @@ Gestiona Living Specs del proyecto. Extrae specs del código existente, detecta 
 ```
 
 **Beneficio**: Reduce retrabajo y mantiene consistencia arquitectónica.
+
+---
+
+### Shaped Brief (01_shaped_brief.md)
+**Qué es**: Documento producido por `/workflows:shape` que contiene el frame (problema/resultado), requirements, shape seleccionada, y fit check.
+
+**Ubicación**: `.ai/project/features/{feature}/01_shaped_brief.md`
+
+**Contiene**:
+- Frame (problema y outcome)
+- Requirements (R0, R1, R2...)
+- Shape seleccionada con partes
+- Fit check (R x A)
+- Decisiones pendientes/resueltas
+
+**Generado por**: `/workflows:shape`
+
+---
+
+### Breadboard (02_breadboard.md)
+**Qué es**: Diagrama técnico que mapea Places, UI affordances, Code affordances y Data stores con su wiring.
+
+**Analogía**: Como un diagrama de circuito eléctrico donde los switches son UI y los componentes son código.
+
+**Ubicación**: `.ai/project/features/{feature}/02_breadboard.md`
+
+---
+
+### Vertical Slice (03_slices.md)
+**Qué es**: Subset del breadboard que incluye tanto UI como backend, demostrable end-to-end.
+
+**Diferencia con horizontal slice**: Un slice horizontal es "solo backend" o "solo frontend". Un slice vertical incluye ambos y se puede demostrar.
+
+**Ejemplo**: V1 = tabla estática con datos reales (UI + API + DB). V2 = input de comandos que modifica la tabla.
 
 ---
 

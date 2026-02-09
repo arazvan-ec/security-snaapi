@@ -67,9 +67,12 @@ USER REQUEST
      │
      ▼
 ┌────────────────┐
-│ Is it a        │──YES──▶ /workflows:plan (task-breakdown workflow)
-│ new feature?   │
-└───────┬────────┘
+│ Is it a        │──YES──▶ Is scope/approach clear?
+│ new feature?   │           │
+└───────┬────────┘          YES──▶ /workflows:plan (task-breakdown workflow)
+        │NO                  │
+        │                   NO───▶ /workflows:shape (shape first, then plan)
+        ▼
         │NO
         ▼
 ┌────────────────┐
@@ -109,8 +112,9 @@ USER REQUEST
 
 | User Need | Complexity | Multi-Agent | Recommended Workflow | Command |
 |-----------|------------|-------------|---------------------|---------|
-| New feature | Any | Yes | task-breakdown | `/workflows:plan --workflow=task-breakdown` |
-| New feature | Simple | No | default | `/workflows:plan --workflow=default` |
+| New feature (unclear scope) | Any | Maybe | shape-first | `/workflows:shape` then `/workflows:plan` |
+| New feature (clear scope) | Any | Yes | task-breakdown | `/workflows:plan --workflow=task-breakdown` |
+| New feature (clear scope) | Simple | No | default | `/workflows:plan --workflow=default` |
 | Bug fix | Any | No | implementation-only | `/workflows:plan --workflow=implementation-only` |
 | Refactoring | Complex | Yes | task-breakdown | `/workflows:plan --workflow=task-breakdown` |
 | Refactoring | Simple | No | implementation-only | `/workflows:work` |

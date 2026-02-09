@@ -605,6 +605,93 @@ Checklist obligatorio antes de considerar código "production-ready":
 
 ---
 
+### 11. Shape Up: Shaping Before Planning
+
+**Origen:** Ryan Singer, creador de Shape Up en Basecamp/37signals. Adaptado para AI-assisted development en 2026 con "Shaping Skills" para Claude Code.
+
+**Principio central:** *"Separa el problema de la solución. Itera en ambos. No te comprometas con ninguno hasta que entiendas ambos."*
+
+**El problema que resuelve:**
+
+```
+Sin Shaping:
+  Usuario describe idea vaga → AI genera plan detallado → Implementación
+  → Problema: El plan asume una solución sin explorar alternativas
+  → Resultado: Retrabajo cuando la dirección elegida no funciona
+
+Con Shaping:
+  Usuario describe idea → Shaping separa problema (R) de solución (A)
+  → Spikes investigan unknowns → Fit check valida cobertura
+  → Breadboard detalla la solución → Slices verticales demostrables
+  → Resultado: Claridad antes de comprometerse, menos retrabajo
+```
+
+**Conceptos clave:**
+
+| Concepto | Descripción | Analogía |
+|----------|-------------|----------|
+| **Requirements (R)** | Definen el PROBLEMA independiente de solución | Requisitos de un edificio vs planos |
+| **Shapes (A, B, C)** | Soluciones alternativas con partes concretas | Diferentes planos para el mismo edificio |
+| **Fit Check (R x A)** | Matriz binaria: qué requisitos cubre cada solución | Checklist de verificación |
+| **Spike** | Investigación para resolver unknowns | Prueba de concepto rápida |
+| **Breadboard** | Diagrama técnico: UI + Code + Data + Wiring | Diagrama de circuito eléctrico |
+| **Vertical Slice** | Subset demostrable end-to-end (UI + backend) | Rebanada de pastel (todas las capas) |
+
+**Flujo de shaping:**
+
+```
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│  FRAME   │───▶│REQUIREMENTS───▶│  SHAPE   │───▶│FIT CHECK │───▶│  SPIKE   │
+│ Problema │    │   R0-Rn  │    │ A, B, C  │    │  R x A   │    │ Unknowns │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘    └────┬─────┘
+                                                                     │
+                    ┌────────────────────────────────────────────────┘
+                    ▼
+              ┌──────────┐    ┌──────────┐    ┌──────────────┐
+              │BREADBOARD│───▶│  SLICES  │───▶│ HANDOFF TO   │
+              │ Wiring   │    │ V1,V2... │    │ /workflows:plan
+              └──────────┘    └──────────┘    └──────────────┘
+```
+
+**Integración con este workflow:**
+
+El shaping se integra como fase opcional pre-planificación:
+
+```
+/workflows:route → /workflows:shape (opcional) → /workflows:plan → /workflows:work
+```
+
+- `/workflows:shape`: Comando que orquesta el proceso de shaping
+- `shaper` skill: Metodología de problema/solución (requirements, shapes, fit checks, spikes)
+- `breadboarder` skill: Detallado técnico (affordances, wiring, slicing vertical)
+
+**Cuándo usar shaping:**
+
+| Situación | Usar Shape? | Razón |
+|-----------|-------------|-------|
+| Feature compleja con múltiples enfoques | **Si** | Explorar alternativas antes de decidir |
+| Scope difuso ("quiero algo como...") | **Si** | Definir boundaries antes de planificar |
+| Cambio de alto riesgo | **Si** | Dirección incorrecta es cara |
+| Bug fix simple | No | Problema y solución son obvios |
+| Feature bien definida y simple | No | Ir directo a `/workflows:plan` |
+
+**Documentos generados:**
+
+```
+.ai/project/features/{feature}/
+├── 01_shaped_brief.md    # Frame, requirements, shape, fit check
+├── 02_breadboard.md       # Places, affordances, wiring, Mermaid
+├── 03_slices.md           # Slices verticales con demo statements
+└── spike-*.md             # Investigaciones de unknowns
+```
+
+> **Fuentes:**
+> - [Shape Up - Ryan Singer](https://basecamp.com/shapeup)
+> - [Shaping Skills for Claude Code - rjs/shaping-skills](https://github.com/rjs/shaping-skills)
+> - [Shaping 0-1 with Claude Code - Ryan Singer](https://x.com/rjs)
+
+---
+
 ## Arquitectura del Sistema
 
 ```
@@ -615,10 +702,17 @@ Este workflow integra todas estas ideas en un sistema cohesivo:
 │  (Cada iteración acelera las siguientes)                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐        │
-│  │   PLANNER   │───▶│   BACKEND   │    │  FRONTEND   │        │
-│  │  (80% plan) │    │  (TDD+DDD)  │    │   (TDD)     │        │
-│  └─────────────┘    └──────┬──────┘    └──────┬──────┘        │
+│  ┌─────────────┐    ┌─────────────┐                              │
+│  │   SHAPER    │───▶│   PLANNER   │                              │
+│  │ (Shape Up)  │    │  (80% plan) │                              │
+│  └─────────────┘    └──────┬──────┘                              │
+│                            │                                     │
+│                 ┌──────────┴──────────┐                          │
+│                 ▼                     ▼                          │
+│          ┌─────────────┐    ┌─────────────┐                     │
+│          │   BACKEND   │    │  FRONTEND   │                     │
+│          │  (TDD+DDD)  │    │   (TDD)     │                     │
+│          └──────┬──────┘    └──────┬──────┘                     │
 │                            │                  │                │
 │                            ▼                  ▼                │
 │                     ┌─────────────────────────────┐            │
@@ -656,6 +750,9 @@ Este proyecto puede instalarse como **plugin de Claude Code**, permitiendo usarl
 ### Comandos del Plugin
 
 ```bash
+# Explorar problema y solución (opcional, para features complejas)
+/workflows:shape payment-integration
+
 # Planificar un feature (80% del esfuerzo)
 /workflows:plan user-authentication
 

@@ -84,19 +84,40 @@ This project adheres to the following principles. All code contributions MUST fo
 
 ## Architecture
 
-### Request Flow
+### Request Flow (New Architecture)
+```
+Controller → GetEditorialHandler → EnrichmentPipeline → Enrichers → Gateways → DTO Factories → Response
+```
+
+### Request Flow (Legacy)
 ```
 Controller → OrchestratorChainHandler → EditorialOrchestrator → External Clients → DataTransformers → Response
 ```
 
 ### Core Design Patterns
 
-**Chain of Responsibility** - Content type routing:
+**Pipeline Pattern** (New) - Data enrichment:
+- `EnrichmentPipeline` orchestrates enrichers in priority order
+- `EditorialContext` carries data through the pipeline
+- Enrichers: Editorial (100), Section (90), Multimedia (80), Tags (70), Journalists (60), Membership (50)
+- Each enricher implements `EnricherInterface` with `priority()`, `supports()`, `enrich()`
+
+**Gateway Pattern** (New) - External service abstraction:
+- Port interfaces in `Domain/Port/Gateway/` define contracts
+- HTTP adapters in `Infrastructure/Gateway/Http/` implement contracts
+- Decorators: `CachedGatewayDecorator`, `CircuitBreakerDecorator`
+
+**DTO Factory Pattern** (New) - Response transformation:
+- Type-safe factories create immutable response DTOs
+- No reflection, full PHPStan L9 compatibility
+- DTOs implement `JsonSerializable`
+
+**Chain of Responsibility** (Legacy) - Content type routing:
 - `OrchestratorChainHandler` routes requests by content type to registered orchestrators
 - `MultimediaOrchestratorHandler` routes multimedia processing by media type (photo, video, widget)
 - Registration via Compiler Passes + service tags
 
-**Strategy Pattern** - Body element transformation:
+**Strategy Pattern** (Legacy) - Body element transformation:
 - `BodyElementDataTransformerHandler` dispatches to type-specific transformers
 - Each `BodyElement` subclass (Paragraph, SubHead, BodyTagPicture, etc.) has its own transformer
 - Tagged with `app.data_transformer`, auto-registered via `BodyDataTransformerCompiler`
@@ -104,12 +125,18 @@ Controller → OrchestratorChainHandler → EditorialOrchestrator → External C
 ### Layer Structure (DDD)
 ```
 src/
-├── Controller/          # Infrastructure: HTTP entry points (thin)
-├── Application/         # Application Layer: Use cases, DTOs, Transformers
-│   └── DataTransformer/ # Transform domain → API response
-├── Orchestrator/        # Application Layer: Aggregate multiple services
-├── Infrastructure/      # Infrastructure: External services, caching
-└── DependencyInjection/ # Framework: Compiler passes, configuration
+├── Controller/              # Infrastructure: HTTP entry points (thin)
+├── Application/             # Application Layer
+│   ├── DataTransformer/     # Legacy: Transform domain → API response
+│   ├── DTO/Response/        # New: Immutable response DTOs
+│   ├── Factory/Response/    # New: Type-safe DTO factories
+│   ├── Handler/             # New: Use case handlers
+│   └── Pipeline/            # New: Enrichment pipeline + Enrichers
+├── Domain/Port/Gateway/     # New: Gateway interfaces (ports)
+├── Infrastructure/
+│   └── Gateway/             # New: HTTP adapters + Decorators
+├── Orchestrator/            # Legacy: Aggregate multiple services
+└── DependencyInjection/     # Framework: Compiler passes, configuration
 ```
 
 ### Compiler Passes (`src/DependencyInjection/Compiler/`)

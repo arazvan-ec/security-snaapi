@@ -140,11 +140,17 @@ workflow/
 | `/workflows:help` | Ayuda rápida y navegación | Cuando necesites orientación |
 | `/workflows:route` | Router inteligente | No sabes qué comando usar |
 
+### Comandos de Shaping (Pre-Planificación)
+
+| Comando | Descripción | Cuándo Usarlo |
+|---------|-------------|---------------|
+| `/workflows:shape` | Explorar problema y solución antes de planificar | Features complejas o con scope difuso |
+
 ### Comandos Principales
 
 | Comando | Descripción | Cuándo Usarlo |
 |---------|-------------|---------------|
-| `/workflows:plan` | Planificar feature | Inicio de feature |
+| `/workflows:plan` | Planificar feature | Inicio de feature (o después de shape) |
 | `/workflows:work` | Implementar código | Después de planificar |
 | `/workflows:review` | Review de calidad | Antes de merge |
 | `/workflows:compound` | Capturar learnings | Después de approval |
@@ -168,6 +174,8 @@ workflow/
 | **commit-formatter** | `skills/workflow/commit-formatter/` | Formato commits |
 | **changelog-generator** | `skills/compound/changelog-generator/` | Generar changelogs |
 | **layer-validator** | `skills/compound/layer-validator/` | Validar capas DDD |
+| **shaper** | `skills/shaper/` | Shaping: separar problema de solución |
+| **breadboarder** | `skills/breadboarder/` | Breadboarding: affordances y slicing vertical |
 
 ---
 
@@ -185,6 +193,7 @@ workflow/
 | Context Window Management | §8 | Optimización |
 | Spec-Driven Development | §9 | Contratos primero |
 | The 70% Problem | §10 | Addy Osmani |
+| Shape Up (Shaping) | §11 | Ryan Singer |
 
 ---
 
@@ -269,6 +278,7 @@ Semana 1+: Dominio
 | 2026-02 | Nuevo comando /workflows:onboarding | commands/workflows/onboarding.md |
 | 2026-02 | Nuevo comando /workflows:help | commands/workflows/help.md |
 | 2026-02 | Mensaje de bienvenida | WELCOME.md |
+| 2026-02 | v2.8.0: Shaping skills (Shape Up, Singer) | skills/shaper/, skills/breadboarder/, commands/workflows/shape.md |
 | 2026-02 | Mejoras de onboarding | QUICKSTART.md, INDEX.md |
 | 2026-01 | Evolution Governance | global_rules.md |
 | 2026-01 | Beyond Vibe Coding | README.md |

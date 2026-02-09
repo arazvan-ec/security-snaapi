@@ -20,6 +20,7 @@ Exception: continuing an already-routed task with valid `50_state.md` context.
 
 | Phase | Command | Purpose |
 |-------|---------|---------|
+| Shape | `/workflows:shape` | Separate problem from solution, explore alternatives, spike unknowns (pre-planning) |
 | Plan | `/workflows:plan` | Architecture-first planning (80% of effort) |
 | Work | `/workflows:work` | Execute with parallelization by roles, layers, or stacks |
 | Review | `/workflows:review` | Multi-agent quality review before merge |
@@ -30,6 +31,7 @@ Exception: continuing an already-routed task with valid `50_state.md` context.
 | Command | Purpose |
 |---------|---------|
 | `/workflows:route` | Route requests to appropriate workflow (entry point) |
+| `/workflows:shape` | Shape features: problem/solution separation, spikes, breadboarding, slicing |
 | `/workflows:plan` | Architecture-first planning |
 | `/workflows:work` | Execute plan with task management |
 | `/workflows:review` | Multi-agent review |
@@ -65,6 +67,7 @@ Exception: continuing an already-routed task with valid `50_state.md` context.
 | Compound | changelog-generator, layer-validator, spec-merger |
 | Integration | mcp-connector |
 | SOLID | solid-analyzer, criteria-generator |
+| Shaping | shaper, breadboarder |
 
 ## Context Activation Model
 
@@ -135,4 +138,4 @@ All roles communicate via `50_state.md`. Status values: `PENDING`, `IN_PROGRESS`
 
 ---
 
-**Version**: 2.7.0 | **Aligned with**: Compound Engineering + Karpathy + Context Engineering (Fowler) + Capability Providers
+**Version**: 2.8.0 | **Aligned with**: Compound Engineering + Karpathy + Context Engineering (Fowler) + Capability Providers + Shape Up (Singer)

@@ -61,9 +61,12 @@ Resolve execution_mode from `core/providers.yaml` before starting any task. In `
 
 Follow the defined workflow without skipping stages.
 
+- For complex or unclear features, Shape before Planning (`/workflows:shape` → `/workflows:plan`)
 - Don't implement before Planning is `COMPLETED`
 - Don't QA before Implementation is `COMPLETED`
 - If you need to change workflow, document why in `DECISIONS.md`
+
+**Full sequence**: Shape (optional) → Plan → Work → Review → Compound
 
 ### 7. Synchronized State
 

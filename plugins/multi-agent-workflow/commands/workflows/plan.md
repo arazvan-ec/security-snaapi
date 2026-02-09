@@ -37,6 +37,25 @@ Good planning means:
 
 ---
 
+## Shaping Integration (Optional Pre-Phase)
+
+If `/workflows:shape` was run before planning, the following artifacts are available:
+
+| File | Content | How Planner Uses It |
+|------|---------|---------------------|
+| `01_shaped_brief.md` | Frame, requirements (R), shape, fit check | Accelerates Phase 1 (Understand) and Phase 2 (Specs) |
+| `02_breadboard.md` | Places, affordances, wiring diagram | Informs Phase 3 (Solutions) with concrete mechanisms |
+| `03_slices.md` | Vertical slices with demo statements | Becomes the task group structure in Phase 3 |
+| `spike-*.md` | Technical investigation findings | Provides context for solution decisions |
+
+When shaped brief exists, the planner should:
+1. **Phase 1**: Use the Frame as the problem statement (verify with user, don't re-derive)
+2. **Phase 2**: Use Requirements (R) as foundation for functional specs (add formal structure)
+3. **Phase 3**: Use Shape parts as starting point for solutions (add SOLID analysis)
+4. **Tasks**: Use Slices (V1, V2...) to structure task groups vertically
+
+---
+
 ## The Architecture-First Planning Process
 
 > **"Every new feature is an INTEGRATION into existing architecture, not an isolated solution."**
@@ -85,6 +104,18 @@ Good planning means:
 ## STEP 0: LOAD PROJECT SPECS (Architecture Context)
 
 Before planning any new feature, load and understand the existing project architecture.
+
+### Step 0.0: Check for Shaped Brief (if exists)
+
+```bash
+# Check if shaping was done before planning
+SHAPED_BRIEF=".ai/project/features/${FEATURE_ID}/01_shaped_brief.md"
+if [ -f "$SHAPED_BRIEF" ]; then
+  echo "Shaped brief found. Using as input for planning."
+  # Read shaped brief, breadboard, slices
+  # Accelerate Phase 1 and Phase 2 with existing context
+fi
+```
 
 ### Step 0.1: Read Existing Specifications
 

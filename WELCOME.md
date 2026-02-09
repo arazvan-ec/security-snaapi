@@ -3,7 +3,7 @@
 ```
 ╔══════════════════════════════════════════════════════════════════╗
 ║                                                                  ║
-║   Multi-Agent Workflow v2.5.0                                    ║
+║   Multi-Agent Workflow v2.8.0                                    ║
 ║   Compound Engineering + Context Engineering                     ║
 ║                                                                  ║
 ║   Instalación completada con éxito!                              ║
@@ -50,16 +50,16 @@ Routing Reference     →  Templates y decision matrix bajo demanda
 Urgency calibration   →  Lenguaje claro sin fatiga de urgencia
 ```
 
-### El Flujo en 4 Fases
+### El Flujo en 5 Fases
 
 ```
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
-│  PLAN   │───▶│  WORK   │───▶│ REVIEW  │───▶│COMPOUND │
-│  80%    │    │  15%    │    │   4%    │    │   1%    │
-└─────────┘    └─────────┘    └─────────┘    └─────────┘
+┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
+│  SHAPE  │───▶│  PLAN   │───▶│  WORK   │───▶│ REVIEW  │───▶│COMPOUND │
+│(opcional)│    │  80%    │    │  15%    │    │   4%    │    │   1%    │
+└─────────┘    └─────────┘    └─────────┘    └─────────┘    └─────────┘
 ```
 
-**Regla de oro**: 80% planificación, 20% ejecución.
+**Regla de oro**: Entender antes de disenar, disenar antes de construir.
 
 ---
 
@@ -67,6 +67,7 @@ Urgency calibration   →  Lenguaje claro sin fatiga de urgencia
 
 | Comando | Qué Hace |
 |---------|----------|
+| `/workflows:shape` | Explorar problema y soluciones antes de planificar (opcional) |
 | `/workflows:plan` | Planificar una nueva feature |
 | `/workflows:work` | Implementar código |
 | `/workflows:review` | Revisar calidad antes de merge |

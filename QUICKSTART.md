@@ -70,6 +70,21 @@ Esto analiza automáticamente:
 
 ## Paso 3: Tu Primera Feature (2 minutos)
 
+### Explorar (opcional, para features complejas)
+
+```bash
+# Si no tienes claro el alcance o enfoque, explora primero
+/workflows:shape payment-integration
+```
+
+Esto te permite:
+- Separar el problema de la solución
+- Comparar alternativas (Shape A vs B vs C)
+- Investigar unknowns antes de comprometerte (spikes)
+- Crear slices verticales demostrables
+
+> **Tip**: Para features simples, salta directamente a planificar.
+
 ### Planificar
 
 ```bash
@@ -105,14 +120,14 @@ Esto genera automáticamente:
 ## Paso 4: Entender el Flujo (1 minuto)
 
 ```
-┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
-│   PLAN      │───▶│   WORK      │───▶│   REVIEW    │───▶│  COMPOUND   │
-│  (80%)      │    │  (15%)      │    │   (4%)      │    │   (1%)      │
-└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
-   Planner          Backend/Frontend      QA              Learnings
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   SHAPE     │───▶│   PLAN      │───▶│   WORK      │───▶│   REVIEW    │───▶│  COMPOUND   │
+│ (opcional)  │    │  (80%)      │    │  (15%)      │    │   (4%)      │    │   (1%)      │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+   Shaper           Planner          Backend/Frontend      QA              Learnings
 ```
 
-**Regla de oro**: 80% planificación, 20% ejecución.
+**Regla de oro**: Entender antes de disenar, disenar antes de construir.
 
 ---
 
@@ -121,7 +136,8 @@ Esto genera automáticamente:
 | Comando | Qué hace | Cuándo usarlo |
 |---------|----------|---------------|
 | `/workflows:discover` | Analiza tu proyecto | Después de instalar el plugin |
-| `/workflows:plan` | Planifica una feature | Siempre primero |
+| `/workflows:shape` | Explora problema y solución | Features complejas o con scope difuso |
+| `/workflows:plan` | Planifica una feature | Después de shape o directamente |
 | `/workflows:work` | Implementa código | Después de planificar |
 | `/workflows:review` | Revisa calidad | Antes de merge |
 | `/workflows:status` | Ver progreso | Cuando quieras |
@@ -141,6 +157,7 @@ Esto genera automáticamente:
 | **50_state.md** | Archivo con el estado actual (fuente de verdad) |
 | **Ralph Wiggum Loop** | Auto-corrección automática (máx 10 intentos) |
 | **TDD** | Tests primero, código después |
+| **Shaping** | Separar problema de solución antes de planificar |
 
 > Ver [GLOSSARY.md](./GLOSSARY.md) para más términos.
 
