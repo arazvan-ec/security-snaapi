@@ -5,16 +5,13 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $extension: '%env(URL_ENV)%'
-    # Legacy orchestrators excluded — replaced by PipelineEditorialOrchestrator
+    # Auto-register chain services (PipelineEditorialOrchestrator registered manually below)
     App\Orchestrator\Chain\:
         resource: '../../src/Orchestrator/Chain/'
         tags: ['app.orchestrators']
         exclude:
             - '../../src/Orchestrator/Chain/Multimedia/'
-            - '../../src/Orchestrator/Chain/EditorialOrchestrator.php'
-            - '../../src/Orchestrator/Chain/PreviumEditorialOrchestrator.php'
             - '../../src/Orchestrator/Chain/PipelineEditorialOrchestrator.php'
-            - '../../src/Orchestrator/Chain/EditorialOrchestratorLegacy.php'
         lazy: true
         shared: true
 
