@@ -7,6 +7,7 @@ namespace App\Infrastructure\Gateway\Http;
 use App\Domain\Port\Gateway\MultimediaGatewayInterface;
 use Ec\Multimedia\Domain\Model\Multimedia\Multimedia;
 use Ec\Multimedia\Domain\Model\Multimedia\MultimediaPhoto;
+use Ec\Multimedia\Infrastructure\Client\Http\Media\QueryMultimediaClient as QueryMultimediaOpeningClient;
 use Ec\Multimedia\Infrastructure\Client\Http\QueryMultimediaClient;
 use GuzzleHttp\Promise\PromiseInterface;
 
@@ -19,6 +20,7 @@ final readonly class MultimediaHttpGateway implements MultimediaGatewayInterface
 
     public function __construct(
         private QueryMultimediaClient $client,
+        private QueryMultimediaOpeningClient $openingClient,
     ) {
     }
 
@@ -50,5 +52,16 @@ final readonly class MultimediaHttpGateway implements MultimediaGatewayInterface
     public function findPhotoByIdAsync(string $id): PromiseInterface
     {
         return $this->client->findPhotoById($id, self::ASYNC);
+    }
+
+    public function findOpeningMultimediaById(string $id): ?Multimedia
+    {
+        try {
+            $multimedia = $this->openingClient->findMultimediaById($id);
+
+            return $multimedia instanceof Multimedia ? $multimedia : null;
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

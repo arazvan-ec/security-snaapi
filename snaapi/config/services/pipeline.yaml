@@ -29,6 +29,9 @@ services:
     App\Domain\Port\Gateway\MembershipGatewayInterface:
         alias: App\Infrastructure\Gateway\Http\MembershipHttpGateway
 
+    App\Domain\Port\Gateway\CommentGatewayInterface:
+        alias: App\Infrastructure\Gateway\Http\CommentHttpGateway
+
     # =================================================================
     # HTTP Gateway Implementations
     # =================================================================
@@ -39,6 +42,7 @@ services:
     App\Infrastructure\Gateway\Http\TagHttpGateway: ~
     App\Infrastructure\Gateway\Http\JournalistHttpGateway: ~
     App\Infrastructure\Gateway\Http\MembershipHttpGateway: ~
+    App\Infrastructure\Gateway\Http\CommentHttpGateway: ~
 
     # =================================================================
     # Enrichers (Pipeline Pattern)
@@ -56,6 +60,8 @@ services:
     App\Application\Pipeline\Enricher\JournalistsEnricher: ~
     App\Application\Pipeline\Enricher\MembershipEnricher: ~
     App\Application\Pipeline\Enricher\CommentsEnricher: ~
+    App\Application\Pipeline\Enricher\OpeningMultimediaEnricher: ~
+    App\Application\Pipeline\Enricher\BodyPhotosEnricher: ~
 
     # =================================================================
     # Pipeline

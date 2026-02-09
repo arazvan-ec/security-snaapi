@@ -20,4 +20,6 @@ interface MultimediaGatewayInterface
     public function findPhotoById(string $id): ?MultimediaPhoto;
 
     public function findPhotoByIdAsync(string $id): PromiseInterface;
+
+    public function findOpeningMultimediaById(string $id): ?Multimedia;
 }
