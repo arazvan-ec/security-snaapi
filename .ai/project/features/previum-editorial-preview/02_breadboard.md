@@ -1,0 +1,124 @@
+# Breadboard: previum-editorial-preview
+
+## Places
+
+| # | Place | Description |
+|---|-------|-------------|
+| P1 | API Gateway (SNAAPI) | Symfony HTTP entry point — controller, firewall, authenticator |
+| P2 | Auth Microservice | External service that validates JWTs and returns user claims |
+| P3 | Editorial Microservice | External service providing editorial content (ec/editorial-client) |
+| P4 | Aggregation Services | External services: section, multimedia, journalist, tag, membership, widget |
+
+---
+
+## Code Affordances
+
+| # | Place | Component | Affordance | Control | Wires Out | Returns To |
+|---|-------|-----------|-----------|---------|-----------|-----------|
+| N1 | P1 | Symfony Firewall | Match route `^/previum` → trigger authenticator | Guard | N2 | |
+| N2 | P1 | PreviumJwtAuthenticator::supports() | Check if request has `/previum` path | Method | N3 | |
+| N3 | P1 | PreviumJwtAuthenticator::authenticate() | Extract Bearer token from Authorization header | Method | N4 | N9 (on failure) |
+| N4 | P1 | HttpTokenValidator::validate() | POST client JWT to auth microservice | HTTP call | N5 | N9 (on failure) |
+| N5 | P2 | Auth Microservice | Validate JWT and return response JWT with user claims | External | | N6 |
+| N6 | P1 | FirebaseJwtDecoder::decode() | Decode response JWT and extract payload | Method | | N7 |
+| N7 | P1 | PreviumJwtAuthenticator (user_type check) | Verify `user_type === 'previum'` in payload | Method | N8 | N10 (on wrong type) |
+| N8 | P1 | PreviumEditorialController::getPreviumEditorialById() | Delegate to OrchestratorChain with type `'previum'` | Method | N11 | S3 |
+| N9 | P1 | PreviumJwtAuthenticator::onAuthenticationFailure() | Return 401 JSON response | Method | | S3 |
+| N10 | P1 | PreviumJwtAuthenticator (403 path) | Return 403 JSON response | Method | | S3 |
+| N11 | P1 | OrchestratorChainHandler::handler('previum') | Route to PreviumEditorialOrchestrator | Method | N12 | |
+| N12 | P1 | PreviumEditorialOrchestrator::execute() | Fetch editorial WITHOUT isVisible() check | Method | N13, N14 | S3 |
+| N13 | P3 | QueryEditorialClient::findEditorialById() | Fetch editorial content | HTTP call | | N12 |
+| N14 | P4 | Aggregation clients (section, multimedia, etc.) | Fetch supplementary data in parallel | HTTP calls | | N12 |
+
+---
+
+## Data Stores
+
+| # | Place | Store | Description |
+|---|-------|-------|-------------|
+| S1 | P1 | Environment Config | `PREVIUM_AUTH_HOST`, `PREVIUM_AUTH_ENDPOINT`, `PREVIUM_JWT_SECRET`, `PREVIUM_AUTH_TIMEOUT` |
+| S2 | P1 | Symfony Security Token Storage | In-memory PreviumUser for current request (stateless) |
+| S3 | P1 | HTTP Response | JsonResponse returned to client (editorial data, 401, 403, or 404) |
+
+---
+
+## Breadboard Diagram
+
+```mermaid
+flowchart TB
+    subgraph P1["P1: API Gateway (SNAAPI)"]
+        N1["N1: Firewall<br/>Match ^/previum"]:::code
+        N2["N2: supports()<br/>Check path"]:::code
+        N3["N3: authenticate()<br/>Extract Bearer"]:::code
+        N4["N4: HttpTokenValidator<br/>POST to auth svc"]:::code
+        N6["N6: JwtDecoder<br/>Decode response JWT"]:::code
+        N7["N7: Check user_type<br/>== previum?"]:::code
+        N8["N8: Controller<br/>Delegate to chain"]:::code
+        N9["N9: onAuthFailure<br/>401 JSON"]:::code
+        N10["N10: 403 path<br/>403 JSON"]:::code
+        N11["N11: ChainHandler<br/>Route to previum"]:::code
+        N12["N12: PreviumOrchestrator<br/>Aggregate data"]:::code
+        S1[("S1: Env Config")]:::store
+        S2[("S2: Security Token")]:::store
+        S3[("S3: HTTP Response")]:::store
+    end
+
+    subgraph P2["P2: Auth Microservice"]
+        N5["N5: Validate JWT<br/>Return user claims"]:::code
+    end
+
+    subgraph P3["P3: Editorial Service"]
+        N13["N13: findEditorialById<br/>Fetch content"]:::code
+    end
+
+    subgraph P4["P4: Aggregation Services"]
+        N14["N14: Section, Multimedia<br/>Journalist, Tag, etc."]:::code
+    end
+
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
+    N4 --> N5
+    N5 -.-> N6
+    N6 -.-> N7
+    N7 -->|"previum"| N8
+    N7 -->|"other"| N10
+    N3 -->|"no token"| N9
+    N4 -->|"error"| N9
+    N8 --> N11
+    N11 --> N12
+    N12 --> N13
+    N12 --> N14
+    N13 -.-> N12
+    N14 -.-> N12
+    N12 -.-> S3
+    N9 -.-> S3
+    N10 -.-> S3
+    S1 -.-> N4
+    N7 -.-> S2
+
+    classDef code fill:#d3d3d3,stroke:#333
+    classDef store fill:#e6e6fa,stroke:#333
+```
+
+---
+
+## Wiring Summary
+
+### Happy Path (authenticated previum user)
+```
+Request → N1 → N2 → N3 → N4 → [P2:N5] → N6 → N7(previum) → N8 → N11 → N12 → [P3:N13 + P4:N14] → S3(200 editorial)
+```
+
+### Error Paths
+```
+No token:     Request → N1 → N2 → N3 → N9 → S3(401)
+Invalid JWT:  Request → N1 → N2 → N3 → N4 → [P2:N5 error] → N9 → S3(401)
+Wrong type:   Request → N1 → N2 → N3 → N4 → [P2:N5] → N6 → N7(other) → N10 → S3(403)
+Not found:    Request → N1 → N2 → N3 → N4 → [P2:N5] → N6 → N7(previum) → N8 → N11 → N12 → [P3:N13 404] → S3(404)
+```
+
+---
+
+**Generated by**: workflows:shape > breadboarder (Phase 6)
+**Date**: 2026-02-09
